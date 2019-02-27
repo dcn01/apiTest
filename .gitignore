@@ -1,0 +1,6 @@
+# SublimeText project files
+*.sublime-workspace
+package-lock.json
+node_modules
+dist
+.idea
