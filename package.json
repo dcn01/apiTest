@@ -7,9 +7,13 @@
         "start": "node app.js"
     },
     "dependencies": {
+        "@babel/core": "^7.1.2",
+        "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+        "@babel/register": "^7.0.0",
         "body-parser": "^1.18.3",
         "express": "^4.16.4",
-        "mongoose": "^5.4.0"
+        "mongoose": "^5.4.0",
+        "xiaohuli-package": "^1.0.3"
     },
     "devDependencies": {}
 }

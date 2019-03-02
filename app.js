@@ -2,6 +2,7 @@ var express=require('express');
 var app =express();
 var bodyParser = require('body-parser');
 let mongoose = require('mongoose');
+let ownTool = require('xiaohuli-package');
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}));
@@ -79,7 +80,7 @@ app.get('/123', async function(req,res){
 app.get('/isMarked', async function(req,res){
     let answer = '';
     console.log(req.query, new Date().toLocaleDateString().replace(/-/g, '/'),'sd');
-    await attendanceRec.find({'date': new Date().toLocaleDateString().replace(/-/g, '/')}, (err, ans) => {
+    await attendanceRec.find({'date': ownTool.getYearMonthDate}, (err, ans) => {
         if (err) {
             console.log("Error:" + err);
         } else {
@@ -133,7 +134,7 @@ app.post('/attendance', async function(req,res){
         date: req.body.date,
         timeStamp: new Date().getTime()
     });
-    const now = new Date().toLocaleDateString().replace(/-/g, '/');
+    const now = ownTool.getYearMonthDate;
     const ans = await attendanceRec.find({'date': now}, (err, ans) => {
         if(err) {
             console.log(err);
