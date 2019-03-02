@@ -79,7 +79,7 @@ app.get('/123', async function(req,res){
 //  判断是否打卡
 app.get('/isMarked', async function(req,res){
     let answer = '';
-    console.log(req.query, new Date().toLocaleDateString().replace(/-/g, '/'),'sd');
+    console.log(req.query, ownTool.getYearMonthDate(),'sd');
     await attendanceRec.find({'date': ownTool.getYearMonthDate()}, (err, ans) => {
         if (err) {
             console.log("Error:" + err);
