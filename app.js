@@ -94,29 +94,6 @@ app.get('/123', async function(req,res){
     res.json(answer)
 });
 
-//  判断是否打卡
-app.get('/isMarked', async function(req,res){
-    let answer = '';
-    console.log(req.query, ownTool.getYearMonthDate(),'sd');
-    await attendanceRec.find({'date': ownTool.getYearMonthDate()}, (err, ans) => {
-        if (err) {
-            console.log("Error:" + err);
-        } else {
-            console.log("res:" + ans);
-            answer = ans;
-            if(answer) {
-                res.status(200),
-                res.json(answer)
-            } else {
-                res.status(200),
-                res.json();
-            }
-        }
-    });
-    // res.status(200),
-    // res.json(answer)
-});
-
 //  拉取最近记录
 app.get('/recentRecord', async function(req,res){
     let answer = 'original';
