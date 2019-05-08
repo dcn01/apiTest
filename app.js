@@ -44,7 +44,7 @@ let dog = new Animal({
     name:"小狗",
     type:"dog",
 });
-dog.save();
+//dog.save();
 // Animal.find({'name': '小狗'}, (err, res) => {
 //     if (err) {
 //         console.log("Error:" + err);
