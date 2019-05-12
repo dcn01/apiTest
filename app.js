@@ -79,7 +79,8 @@ let attendance = new mongoose.Schema({
 let attendanceRec = mongoose.model('attendanceRec', attendance);
 
 //写个接口123 get请求
-app.get('/123', async function(req,res){
+const apiPrefix = '/api';
+app.get(apiPrefix + '/123', async function(req,res){
     let answer = '';
     console.log(req.query, 'sd');
     await Animal.find({'name': '小狗'}, (err, ans) => {
@@ -95,7 +96,7 @@ app.get('/123', async function(req,res){
 });
 
 //  拉取最近记录
-app.get('/recentRecord', async function(req,res){
+app.get(apiPrefix + '/recentRecord', async function(req,res){
     let answer = 'original';
     console.log(req.cookies, 'cookie');
     const oneDatTime = 24*60*60*1000;
@@ -115,7 +116,7 @@ app.get('/recentRecord', async function(req,res){
     res.json(answer)
 });
 //   添加用户
-app.post('/addUser', async function(req,res){
+app.post(apiPrefix + '/addUser', async function(req,res){
     console.log(req.body, 'body');
     const useYet = await User.find({'userName': req.body.userName});
     if (useYet.length !== 0) {
@@ -134,7 +135,7 @@ app.post('/addUser', async function(req,res){
 });
 
 //  验证密码
-app.post('/verify', async function(req,res){
+app.post(apiPrefix + '/verify', async function(req,res){
     console.log(req.body, 'body');
     const userName = req.body.userName;
     await User.find({userName: userName}, function(err, goal) {
@@ -149,7 +150,7 @@ app.post('/verify', async function(req,res){
     })
 });
 //   来个post请求
-app.post('/addOrUpdateTemplate', async function(req,res){
+app.post(apiPrefix + '/addOrUpdateTemplate', async function(req,res){
     console.log(req.body, 'body');
     let store = new Store({
         preferTemplate: req.body.preferTemplate,
@@ -184,8 +185,8 @@ app.post('/addOrUpdateTemplate', async function(req,res){
 });
 
 //  打卡接口,创建或更新
-app.post('/attendance', async function(req,res){
-    console.log(req.body, 'body');
+app.post(apiPrefix + '/attendance', async function(req,res){
+    console.log(req.body, req.cookies.userName, 'body');
     let store = new attendanceRec({
         flagArray: req.body.ansArray,
         date: req.body.date,
@@ -215,7 +216,7 @@ app.post('/attendance', async function(req,res){
     }
 });
 
-app.post('/readTemplate', async function(req,res){
+app.post(apiPrefix + '/readTemplate', async function(req,res){
     console.log(req.body, 'body');
     const templateName = req.body.templateName;
     let ans = 'xxx';
