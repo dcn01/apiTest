@@ -5,6 +5,9 @@ var bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 let ownTool = require('xiaohuli-package');
 
+let addChatApi = require('./chatApi');
+let socketServer = require('./socketServer');
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -19,14 +22,11 @@ app.all('*', function(req, res, next) {
    next();
 });
 
-// mongoose.connect('mongodb://xiaohuli:u962910@ds257372.mlab.com:57372/wp-api-test',
+//   mongoose.connect('mongodb://xiaohuli:123456@149.129.83.246:27017/test',
 //   { useNewUrlParser: true });
 
-// mongoose.connect('mongodb://root:root123456@149.129.83.246:27017/admin',
-//   { useNewUrlParser: true });
-
-  mongoose.connect('mongodb://xiaohuli:123456@149.129.83.246:27017/test',
-  { useNewUrlParser: true });
+mongoose.connect('mongodb://@127.0.0.1:27017/test',
+{ useNewUrlParser: true });
 
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -34,16 +34,18 @@ db.once('open', function() {
   // we're connected!
   console.log('success!');
 });
+
 let animalSchema = new mongoose.Schema({
     name:String,
     type:String
 });
 let Animal=mongoose.model("Animal",animalSchema);
 
-let dog = new Animal({
-    name:"小狗",
-    type:"dog",
-});
+// let dog = new Animal({
+//     name:"小狗",
+//     type:"dog",
+// });
+
 //dog.save();
 // Animal.find({'name': '小狗'}, (err, res) => {
 //     if (err) {
@@ -232,6 +234,9 @@ app.post(apiPrefix + '/readTemplate', async function(req,res){
         }
     })
 });
+
+// 挂载chat Api
+app = addChatApi.chatApiRealization(app, mongoose);
  
 //配置服务端口
  
@@ -245,3 +250,7 @@ var server = app.listen(PORT, function () {
  
     console.log('Example app listening at http://%s:%s', host, port);
 })
+
+//  开启socket.io 服务
+var io = require('socket.io')(server);
+socketServer(io, addChatApi.Message.Message);
