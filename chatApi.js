@@ -53,6 +53,10 @@ let chatApiRealization = (app, mongoose) => {
         }
     }
 
+    const getBothOwner = (item1, item2) => {
+        return [item1, item2].sort((a, b) => a > b).join('@');
+    }
+
     //  用户添加
     app.post(apiPrefix + '/addChatUser', async function(req,res){
         console.log(req.body, 'body');
@@ -165,6 +169,14 @@ let chatApiRealization = (app, mongoose) => {
         const regrex = '/^' + i_am + '@|@' + i_am + '$/g';
         const getMessage = await Message.find({'bothOwner':{$regex: eval(regrex)}}, {message:{$slice: -15}});
         responseToClient(res, getMessage);
+    })
+
+    app.get(apiPrefix + '/getMoreMessage', async function(req, res) {
+        const i_am = req.cookies.userName;
+        const bothOwner = getBothOwner(i_am, req.query.toFriend);
+        const getNum = req.query.currentLength;
+        const moreMessage = await Message.find({'bothOwner': bothOwner}, {message: {$slice: [-1 * getNum - 15, 15]}});
+        responseToClient(res, moreMessage[0]);
     })
 
     console.log('chatApi did mount!');
