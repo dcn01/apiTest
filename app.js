@@ -252,5 +252,7 @@ var server = app.listen(PORT, function () {
 })
 
 //  开启socket.io 服务
-var io = require('socket.io')(server);
+var io = require('socket.io')(server, {
+    path: '/mySocket'
+});
 socketServer(io, addChatApi.Message.Message);
