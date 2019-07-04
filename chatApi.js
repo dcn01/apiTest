@@ -1,4 +1,5 @@
 // var io = require('socket.io')(server);
+let fs = require('fs');
 
 let OuterChatUser = {};
 let OuterMessage = {};
@@ -151,10 +152,10 @@ let chatApiRealization = (app, mongoose) => {
 
         const friend = await getUser(addFriend);
         const friendFriendList = friend[0].friendsList;
-        friendFriendList.push(i_am);
+        friendFriendList.push({ userName: i_am, nickName: ans[0].nickName, avatar: ans[0].avatar});
         if (ans.length > 0 && !targetList.includes(addFriend)) {
             const targetList = ans[0].friendsList;
-            targetList.push(addFriend);
+            targetList.push({ userName: addFriend, nickName: friend[0].nickName, avatar: friend[0].avatar});
             removeItemFromArray(reqList, addFriend);
             await chatUserUpdate(i_am, {friendsList: targetList, friendRequest: reqList});
             await chatUserUpdate(addFriend, {friendsList: friendFriendList});
@@ -162,6 +163,31 @@ let chatApiRealization = (app, mongoose) => {
         } else {
             responseToClient(res, 'has friend already!');
         }
+    })
+
+    //  更新用户资料
+    app.post(apiPrefix + '/updateUserInfo', async function(req,res) {
+        const i_am = req.cookies.userName;
+        let transferObj = req.body.changeObj;
+        const key = Object.keys(transferObj)[0];
+        if (key === 'avatar') {
+            const imgName = i_am + '_avatar'
+            var path = '../chat/dist/avatar/'+ imgName +'.png';//从app.js级开始找--在我的项目工程里是这样的
+            var base64 = transferObj.avatar.replace(/^data:image\/\w+;base64,/, "");//去掉图片base64码前面部分data:image/png;base64
+            var dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，
+            fs.writeFile(path,dataBuffer,function(err){//用fs写入文件
+                if(err){
+                    console.log(err);
+                }else{
+                    console.log('写入成功！');
+                }
+            })
+            const imgUrl = (process.argv.includes('local') ? 'http://localhost:3001/avatar/' : 'http://http://149.129.83.246/avatar/') + imgName + '.png';
+            transferObj = {avatar: imgUrl}
+        }
+        console.log(transferObj, 'dddd');
+        chatUserUpdate(i_am, transferObj);
+        responseToClient(res, 'success');
     })
 
     app.get(apiPrefix + '/getAllMessage', async function(req, res) {
