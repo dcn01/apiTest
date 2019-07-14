@@ -255,4 +255,4 @@ var server = app.listen(PORT, function () {
 var io = require('socket.io')(server, {
     path: '/mySocket'
 });
-socketServer(io, addChatApi.Message.Message);
+socketServer(io, addChatApi.Message.Message, addChatApi.ChatUser.ChatUser);
