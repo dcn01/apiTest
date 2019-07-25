@@ -184,7 +184,7 @@ let chatApiRealization = (app, mongoose) => {
                     console.log('写入成功！');
                 }
             })
-            const imgUrl = (process.argv.includes('local') ? 'http://localhost:3001/avatar/' : 'http://149.129.83.246/avatar/') + imgName + '.png';
+            const imgUrl = (process.argv.includes('local') ? 'http://localhost:3001/avatar/' : 'https://tangshisanbaishou.xyz/avatar/') + imgName + '.png';
             transferObj = {avatar: imgUrl}
         }
         if (key === 'fridendNickName') {
