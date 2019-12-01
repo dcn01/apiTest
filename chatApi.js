@@ -172,8 +172,9 @@ let chatApiRealization = (app, mongoose) => {
         const i_am = req.body.userName;
         let transferObj = req.body.changeObj;
         const key = Object.keys(transferObj)[0];
+        let data = {};
         if (key === 'avatar') {
-            const imgName = i_am + '_avatar'
+            const imgName = i_am + '_avatar_' + Date.now();
             var path = '../chat/dist/avatar/'+ imgName +'.png';//从app.js级开始找--在我的项目工程里是这样的
             var base64 = transferObj.avatar.replace(/^data:image\/\w+;base64,/, "");//去掉图片base64码前面部分data:image/png;base64
             var dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，
@@ -184,8 +185,19 @@ let chatApiRealization = (app, mongoose) => {
                     console.log('写入成功！');
                 }
             })
+            //  删除掉老文件
+            fs.readdirSync('../chat/dist/avatar').map((item) => {
+                if (eval('/' + i_am + '_avatar_/ig').exec(item)) {
+                    fs.unlink('../chat/dist/avatar/' + item, (e) => {
+                        if(e) {
+                            console.log(e);
+                        }
+                    })
+                }
+            })
             const imgUrl = (process.argv.includes('local') ? 'http://localhost:3001/avatar/' : 'https://tangshisanbaishou.xyz/avatar/') + imgName + '.png';
-            transferObj = {avatar: imgUrl}
+            transferObj = {avatar: imgUrl};
+            data.imgUrl = imgUrl;
         }
         if (key === 'fridendNickName') {
             const { newNickName, friend } = transferObj.fridendNickName;
@@ -198,7 +210,7 @@ let chatApiRealization = (app, mongoose) => {
         } else {
             chatUserUpdate(i_am, transferObj);
         }
-        responseToClient(res, 'success');
+        responseToClient(res, { status: 'success', data});
     })
 
     app.get(apiPrefix + '/getAllMessage', async function(req, res) {
