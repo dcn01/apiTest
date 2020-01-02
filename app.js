@@ -22,9 +22,6 @@ app.all('*', function(req, res, next) {
    next();
 });
 
-//   mongoose.connect('mongodb://xiaohuli:123456@149.129.83.246:27017/test',
-//   { useNewUrlParser: true });
-
 mongoose.connect('mongodb://@127.0.0.1:27017/test',
 { useNewUrlParser: true });
 
